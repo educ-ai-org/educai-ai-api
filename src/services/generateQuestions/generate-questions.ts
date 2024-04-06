@@ -14,7 +14,6 @@ async function generateQuestions(text: string, questionsNumber: number) {
 
     let cleanText = result.replace(/^```json\s*|\s*```$/gmi, '')
 
-    console.log(cleanText)
     return cleanText
 }
 
