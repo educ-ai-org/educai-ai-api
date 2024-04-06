@@ -8,8 +8,4 @@ router.get('/transcribe', async (_, res) => {
     res.status(200).send(transcription)
 })
 
-router.get('/a', (req, res) => {
-    res.status(200).send('OK')
-})
-
 export default router
