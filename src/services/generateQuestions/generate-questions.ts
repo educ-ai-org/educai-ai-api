@@ -1,8 +1,11 @@
-import { PromptTemplate } from 'langchain/prompts'
 import model from '../../clients/google-client'
 import { questionTemplate } from './prompts/question'
+import { JsonOutputFunctionsParser } from 'langchain/output_parsers'
 
 async function generateQuestions(text: string, questionsNumber: number) {
+
+    const parser = new JsonOutputFunctionsParser()
+    questionTemplate.outputParser = parser
 
     const questions = questionsNumber.toString()
 
