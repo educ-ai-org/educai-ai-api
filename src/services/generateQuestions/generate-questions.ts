@@ -1,3 +1,4 @@
+import { PromptTemplate } from 'langchain/prompts'
 import model from '../../clients/google-client'
 import { questionTemplate } from './prompts/question'
 
