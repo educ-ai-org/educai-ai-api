@@ -8,22 +8,14 @@ async function generateQuestions(text: string, questionsNumber: number) {
 
     const chain = questionTemplate.pipe(model)
 
-    const result = await chain.invoke({ text: text }).then((result) => {
+    const result = await chain.invoke({ text: text, number: questions }).then((result) => {
         return result.lc_kwargs.content
     })
 
-    let cleanText = result
-    if (cleanText.startsWith("```json ")) {
-        cleanText = cleanText.substring(7); // Remove os primeiros 7 caracteres
-    }
-    if (cleanText.endsWith(" ```")) {
-        cleanText = cleanText.substring(0, cleanText.length - 3); // Remove os últimos 3 caracteres
-    }
+    let cleanText = result.replace(/^```json\s*|\s*```$/gmi, '')
 
     console.log(cleanText)
-    const json = JSON.parse(cleanText)
-    
-    return json
+    return cleanText
 }
 
 export default generateQuestions
