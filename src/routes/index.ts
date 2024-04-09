@@ -1,15 +1,46 @@
 import express from 'express'
-import getTextFromYoutube from '../services/getTextFromYoutube/youtubeTranscript'
+import multer from 'multer'
+import pdfParse from 'pdf-parse'
+import mammoth from 'mammoth'
 
 const router = express.Router()
+const upload = multer({ storage: multer.memoryStorage() })
 
 router.get('/health', (_, res) => {
     res.status(200).send('OK')
 })
 
-router.get('/hello', async (_, res) => {
-    const text = await getTextFromYoutube('https://www.youtube.com/watch?v=lAy04mwaL7U')
-    res.status(200).send(text)
+router.post('/extract-text', upload.single('file'), async (req, res) => {
+    if (!req.file) {
+        return res.status(400).send('No file uploaded.')
+    }
+
+    try {
+        let text
+        switch (req.file.mimetype) {
+            case 'application/pdf':
+                const pdfData = await pdfParse(req.file.buffer)
+                text = pdfData.text
+                break
+            case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+                const mammothResult = await mammoth.extractRawText({buffer: req.file.buffer})
+                text = mammothResult.value
+                break
+            case 'text/plain':
+                text = req.file.buffer.toString('utf-8')
+                break
+            case 'text/csv':
+                text = req.file.buffer.toString('utf-8')
+                break
+            default:
+                return res.status(400).send('File format not supported.')
+        }
+
+        res.send({ text })
+    } catch (error) {
+        console.error(error)
+        res.status(500).send('Error processing the file.')
+    }
 })
 
 export default router
