@@ -3,6 +3,7 @@ import multer from 'multer'
 import pdfParse from 'pdf-parse'
 import mammoth from 'mammoth'
 import getTextFromYoutube from '../services/getTextFromYoutube/youtubeTranscript'
+import scrapeUrl from '../services/scrapeUrl/scrapeUrl'
 
 const router = express.Router()
 const upload = multer({ storage: multer.memoryStorage() })
@@ -52,6 +53,15 @@ router.post('/youtube-extract', async (req, res) => {
     } catch (error) {
         res.status(500).send(req)
     }
+})
+
+router.post('/scrape-url', async (req, res) => {
+    const { url } = req.body
+    if (!url) {
+        return res.status(400).send('URL is required.')
+    }
+    const text = await scrapeUrl(url)
+    res.send({ text })
 })
 
 export default router
