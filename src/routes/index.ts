@@ -2,6 +2,7 @@ import express from 'express'
 import multer from 'multer'
 import pdfParse from 'pdf-parse'
 import mammoth from 'mammoth'
+import getTextFromYoutube from '../services/getTextFromYoutube/youtubeTranscript'
 
 const router = express.Router()
 const upload = multer({ storage: multer.memoryStorage() })
@@ -40,6 +41,18 @@ router.post('/extract-text', upload.single('file'), async (req, res) => {
     } catch (error) {
         console.error(error)
         res.status(500).send('Error processing the file.')
+    }
+})
+
+router.post('/youtube-extract', async (req, res) => {
+    try {
+        console.log(req.body)
+        const { url } = req.body
+        const text = await getTextFromYoutube(url)
+        res.send({ text })
+    } catch (error) {
+        console.error(error)
+        res.status(500).send('Error extracting text from YouTube.')
     }
 })
 
