@@ -46,13 +46,11 @@ router.post('/extract-text', upload.single('file'), async (req, res) => {
 
 router.post('/youtube-extract', async (req, res) => {
     try {
-        console.log(req.body)
         const { url } = req.body
         const text = await getTextFromYoutube(url)
         res.send({ text })
     } catch (error) {
-        console.error(error)
-        res.status(500).send('Error extracting text from YouTube.')
+        res.status(500).send(req)
     }
 })
 
