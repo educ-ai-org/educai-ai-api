@@ -5,15 +5,15 @@ export const questionTemplate = ChatPromptTemplate.fromTemplate(
     `
     As the world's most renowned English teacher, your new mission is to develop personalized English practice questions that rigorously align with the following parameters:
 
-- **Level/Difficulty:** {level} (e.g., beginner, intermediate, advanced)
-- **Question Theme:** {theme} (e.g., verbs, vocabulary, pronouns, infinitive)
-- **Related Theme:** {relatedTheme} (e.g., Breaking Bad, fast food, movies, Fortnite, music)
+    - **Level/Difficulty:** {level} (e.g., beginner, intermediate, advanced)
+    - **Question Theme:** {theme} (e.g., verbs, vocabulary, pronouns, infinitive)
+    - **Related Theme:** {relatedTheme} (e.g., Breaking Bad, fast food, movies, Fortnite, music)
 
-Based on these criteria, it's imperative that you read and thoroughly understand the provided text:
+    Based on these criteria, it's imperative that you read and thoroughly understand the provided text:
 
     {text}
 
-After analyzing the text, with a clear understanding of its content and considering the specified parameters, you are to generate {number} multiple-choice questions. Each question must:
+    After analyzing the text, with a clear understanding of its content and considering the specified parameters, you are to generate {number} multiple-choice questions. Each question must:
 
 1. Reflect the key information and themes identified in the text.
 2. Be aligned with the specified level of difficulty, without exceptions.
