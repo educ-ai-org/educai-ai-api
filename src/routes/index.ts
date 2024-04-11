@@ -4,6 +4,7 @@ import pdfParse from 'pdf-parse'
 import mammoth from 'mammoth'
 import getTextFromYoutube from '../services/getTextFromYoutube/youtubeTranscript'
 import scrapeUrl from '../services/scrapeUrl/scrapeUrl'
+import generateQuestions from '../services/generateQuestions/generate-questions'
 
 const router = express.Router()
 const upload = multer({ storage: multer.memoryStorage() })
@@ -62,6 +63,15 @@ router.post('/scrape-url', async (req, res) => {
     }
     const text = await scrapeUrl(url)
     res.send({ text })
+})
+
+router.post('/generate-question', async (req, res) => {
+    const { text, numberOfQuestions } = req.body
+    if (!text) {
+        return res.status(400).send('Text is required.')
+    }
+    const response = await generateQuestions(text, numberOfQuestions)
+    res.send(response)
 })
 
 export default router
