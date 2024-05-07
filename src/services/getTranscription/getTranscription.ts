@@ -1,22 +1,35 @@
-import { v2, protos } from '@google-cloud/speech'
-const speech = protos.google.cloud.speech.v2
+import { SpeechClient } from '@google-cloud/speech';
 
-export default async function getTranscription(buffer: Uint8Array) {
-  const jsonPath = './key.json'
-
-  const client = new v2.SpeechClient({
-    keyFilename: jsonPath
-  })
+export default async function getTranscription(filePath: string): Promise<string> {
+  const client = new SpeechClient({ keyFilename: './key.json' });
 
   try {
-    const [response] = await client.recognize({ content: buffer })
-    const transcription = response.results?.map(result => {
-      if (!result.alternatives) return ''
-      return result.alternatives[0].transcript
-    }).join('\n')
-    return transcription
-  }
-  catch (error) {
-    console.error('Error transcribing audio:', error)
+    const [response] = await client.recognize({
+      audio: {
+        uri: filePath
+      },
+      config: {
+        encoding: 'MP3',
+        sampleRateHertz: 16000,
+        languageCode: 'en-US'
+      }
+    })
+
+    let transcript = ''
+    const results = response.results
+    if (results){
+      results.forEach(result => {
+        if(result.alternatives){
+          result.alternatives.forEach(alternative => {
+            transcript += alternative.transcript + ''
+          })
+        }
+      })
+    }
+
+    return transcript
+  } catch (error) {
+    console.error('Failed to transcribe audio:', error);
+    throw error;
   }
 }

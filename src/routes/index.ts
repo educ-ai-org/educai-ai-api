@@ -6,6 +6,7 @@ import getTextFromYoutube from '../services/getTextFromYoutube/youtubeTranscript
 import scrapeUrl from '../services/scrapeUrl/scrapeUrl'
 import generateQuestions from '../services/generateQuestions/generate-questions'
 import getTranscription from '../services/getTranscription/getTranscription'
+import uploadBuffer from '../services/getTranscription/uploadBuffer'
 
 const router = express.Router()
 const upload = multer({ storage: multer.memoryStorage() })
@@ -85,8 +86,10 @@ router.post('/transcription', upload.single('file'), async (req, res) => {
     const Uint8ArrayBuffer = new Uint8Array(file)
 
     try {
-        const text = getTranscription(Uint8ArrayBuffer)
-        res.status(200).send({ text })
+        const gsFile = await uploadBuffer(file, req.file.originalname)
+        const fileName = `gs://educai-bucket/${req.file.originalname}`
+        const transcript = await getTranscription(fileName)
+        res.status(200).send({ text: transcript })
     } catch (error) {
         console.error(error)
         res.status(500).send(error)
