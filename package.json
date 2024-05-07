@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@google-cloud/speech": "^6.5.0",
     "@langchain/core": "^0.1.54",
     "@langchain/google-genai": "^0.0.10",
     "axios": "^1.6.8",
