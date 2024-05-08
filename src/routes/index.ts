@@ -7,6 +7,7 @@ import scrapeUrl from '../services/scrapeUrl/scrapeUrl'
 import generateQuestions from '../services/generateQuestions/generate-questions'
 import getTranscription from '../services/getTranscription/getTranscription'
 import uploadBuffer from '../services/getTranscription/uploadBuffer'
+import getEduResonse from '../services/getEduResponse/getEduResponse'
 
 const router = express.Router()
 const upload = multer({ storage: multer.memoryStorage() })
@@ -94,6 +95,15 @@ router.post('/transcription', upload.single('file'), async (req, res) => {
         console.error(error)
         res.status(500).send(error)
     }
+})
+router.post('/edu-response', async (req, res) => {
+    console.log('bateu no edu')
+    const { question } = req.body
+    if (!question) {
+        return res.status(400).send('Question is required.')
+    }
+    const response = await getEduResonse(question)
+    res.status(200).send({ response })
 })
 
 export default router

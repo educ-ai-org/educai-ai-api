@@ -27,6 +27,7 @@ export default async function getTranscription(filePath: string): Promise<string
       })
     }
 
+    console.log('Transcript:', transcript)
     return transcript
   } catch (error) {
     console.error('Failed to transcribe audio:', error);
