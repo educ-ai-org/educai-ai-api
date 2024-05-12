@@ -1,7 +1,7 @@
 import { ChatGoogleGenerativeAI } from '@langchain/google-genai'
 
 const model = new ChatGoogleGenerativeAI({
-    apiKey: 'AIzaSyBUCK_-ige0dSr0aXdTurCbG44ou_tewbA',
+    apiKey: process.env.GOOGLE_API_KEY,
     modelName: 'gemini-pro'
 })
 

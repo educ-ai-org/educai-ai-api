@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "start": "dotenv -e .env ts-node src/app.ts"
+  },
   "dependencies": {
     "@google-cloud/speech": "^6.5.0",
     "@google-cloud/storage": "^7.11.0",
@@ -6,6 +9,7 @@
     "@langchain/google-genai": "^0.0.10",
     "axios": "^1.6.8",
     "cheerio": "^1.0.0-rc.12",
+    "dotenv-cli": "^7.4.2",
     "express": "^4.19.2",
     "langchain": "^0.1.31",
     "mammoth": "^1.7.1",
