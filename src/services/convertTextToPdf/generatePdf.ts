@@ -4,19 +4,25 @@ import puppeteer from 'puppeteer'
 import path from 'path';
 
 async function generatePDF(data: { title: string, content: string }) {
-	const templateHtml = fs.readFileSync('./src/assets/PDFTemplate.html', 'utf8');
+	const templateHtml = fs.readFileSync('./src/assets/ContentTemplate.html', 'utf8');
+	const headerHtml = fs.readFileSync('./src/assets/HeaderAndFooterTemplate.html', 'utf8');
+	const footerHtml = fs.readFileSync('./src/assets/HeaderAndFooterTemplate.html', 'utf8');
   
 	const template = Handlebars.compile(templateHtml);
 	const htmlContent = template(data);
   
 	const browser = await puppeteer.launch();
 	const page = await browser.newPage();
+
 	await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
+
 	const pdfBuffer = await page.pdf({
 		format: 'A4',
 		printBackground: true,
-		displayHeaderFooter: false,
-		margin: { top: '140px', bottom: '140px' }
+		displayHeaderFooter: true,
+		headerTemplate: headerHtml,
+		footerTemplate: footerHtml,
+		margin: { top: '100px', bottom: '100px', left: '20px', right: '20px' }
 	});
   
 	await browser.close();
