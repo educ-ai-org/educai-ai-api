@@ -9,6 +9,8 @@ import getTranscription from '../services/getTranscription/getTranscription'
 import uploadBuffer from '../services/getTranscription/uploadBuffer'
 import getEduResonse from '../services/getEduResponse/getEduResponse'
 import generatePDF from '../services/convertTextToPdf/generatePdf'
+import { generateEducationalResource } from '../services/generateEducationalResource/generateEducationalResource'
+import { ResourcesUploaded } from '../models/ResourcesUploaded'
 
 const router = express.Router()
 const upload = multer({ storage: multer.memoryStorage() })
@@ -108,14 +110,40 @@ router.post('/edu-response', async (req, res) => {
 })
 
 router.post('/convert-text-to-pdf', async (req, res) => {
-    const { title, content } = req.body as { title: string, content: string }
+    const { content } = req.body as { content: string }
 
-    if (!title || !content) {
+    if (!content) {
         return res.status(400).send('Text and title are required.')
     }
 
     try {
-        const { pdfBuffer } = await generatePDF({ title, content });
+        const pdfBuffer = await generatePDF({ content });
+
+        res.set({
+            'Content-Type': 'application/pdf',
+            'Content-Disposition': 'attachment; filename="output.pdf"',
+            'Content-Length': pdfBuffer.length
+        });
+
+        res.send(pdfBuffer);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Erro ao gerar o PDF');
+    }
+})
+
+router.post('/generate-educational-resource', upload.fields([{name: 'audio'}, { name: 'document' }]) , async (req, res) => {
+    const { youtubeLink } = req.body as ResourcesUploaded
+    const { audio, document } = req.files as { audio: Express.Multer.File[], document: Express.Multer.File[] }
+
+    if(!youtubeLink && !audio && !document) {
+        return res.status(400).send('Missing parameters')
+    }
+
+    const data = await generateEducationalResource({ youtubeLink, document: document[0], audio: audio[0] });
+
+    try {
+        const pdfBuffer = await generatePDF(data);
 
         res.set({
             'Content-Type': 'application/pdf',
