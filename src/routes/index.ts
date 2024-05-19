@@ -8,6 +8,7 @@ import generateQuestions from '../services/generateQuestions/generate-questions'
 import getTranscription from '../services/getTranscription/getTranscription'
 import uploadBuffer from '../services/getTranscription/uploadBuffer'
 import getEduResonse from '../services/getEduResponse/getEduResponse'
+import generatePDF from '../services/convertTextToPdf/generatePdf'
 
 const router = express.Router()
 const upload = multer({ storage: multer.memoryStorage() })
@@ -29,7 +30,7 @@ router.post('/extract-text', upload.single('file'), async (req, res) => {
                 text = pdfData.text
                 break
             case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
-                const mammothResult = await mammoth.extractRawText({buffer: req.file.buffer})
+                const mammothResult = await mammoth.extractRawText({ buffer: req.file.buffer })
                 text = mammothResult.value
                 break
             case 'text/plain':
@@ -104,6 +105,29 @@ router.post('/edu-response', async (req, res) => {
     }
     const response = await getEduResonse(question)
     res.status(200).send({ response })
+})
+
+router.post('/convert-text-to-pdf', async (req, res) => {
+    const { title, content } = req.body as { title: string, content: string }
+
+    if (!title || !content) {
+        return res.status(400).send('Text and title are required.')
+    }
+
+    try {
+        const { pdfBuffer } = await generatePDF({ title, content });
+
+        res.set({
+            'Content-Type': 'application/pdf',
+            'Content-Disposition': 'attachment; filename="output.pdf"',
+            'Content-Length': pdfBuffer.length
+        });
+
+        res.send(pdfBuffer);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Erro ao gerar o PDF');
+    }
 })
 
 export default router
