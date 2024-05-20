@@ -1,7 +1,7 @@
 import fs from 'fs';
 import Handlebars from 'handlebars'
 import puppeteer from 'puppeteer'
-import path from 'path';
+// import path from 'path';
 
 async function generatePDF(data: { content: string }) {
 	const templateHtml = fs.readFileSync('./src/assets/ContentTemplate.html', 'utf8');
@@ -26,6 +26,8 @@ async function generatePDF(data: { content: string }) {
 	});
   
 	await browser.close();
+	// const pdfPath = path.join(__dirname, 'output.pdf');
+	// fs.writeFileSync(pdfPath, pdfBuffer);
 
 	return pdfBuffer;
 }

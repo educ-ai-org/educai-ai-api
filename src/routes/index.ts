@@ -133,14 +133,17 @@ router.post('/convert-text-to-pdf', async (req, res) => {
 })
 
 router.post('/generate-educational-resource', upload.fields([{name: 'audio'}, { name: 'document' }]) , async (req, res) => {
-    const { youtubeLink } = req.body as ResourcesUploaded
+    const { youtubeLink, intructions } = req.body as ResourcesUploaded
     const { audio, document } = req.files as { audio: Express.Multer.File[], document: Express.Multer.File[] }
 
     if(!youtubeLink && !audio && !document) {
         return res.status(400).send('Missing parameters')
     }
 
-    const data = await generateEducationalResource({ youtubeLink, document: document[0], audio: audio[0] });
+    const audioFile = audio ? audio[0] : null
+    const documentFile = document ? document[0] : null
+
+    const data = await generateEducationalResource({ youtubeLink, document: documentFile, audio: audioFile, intructions });
 
     try {
         const pdfBuffer = await generatePDF(data);
