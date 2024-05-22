@@ -1,0 +1,6 @@
+export type ResourcesUploaded = {
+	youtubeLink?: string;
+	document?: Express.Multer.File | null;
+	audio?: Express.Multer.File | null;
+	intructions?: string;
+}

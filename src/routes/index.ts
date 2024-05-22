@@ -8,6 +8,9 @@ import generateQuestions from '../services/generateQuestions/generate-questions'
 import getTranscription from '../services/getTranscription/getTranscription'
 import uploadBuffer from '../services/getTranscription/uploadBuffer'
 import getEduResonse from '../services/getEduResponse/getEduResponse'
+import generatePDF from '../services/convertTextToPdf/generatePdf'
+import { generateEducationalResource } from '../services/generateEducationalResource/generateEducationalResource'
+import { ResourcesUploaded } from '../models/ResourcesUploaded'
 
 const router = express.Router()
 const upload = multer({ storage: multer.memoryStorage() })
@@ -29,7 +32,7 @@ router.post('/extract-text', upload.single('file'), async (req, res) => {
                 text = pdfData.text
                 break
             case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
-                const mammothResult = await mammoth.extractRawText({buffer: req.file.buffer})
+                const mammothResult = await mammoth.extractRawText({ buffer: req.file.buffer })
                 text = mammothResult.value
                 break
             case 'text/plain':
@@ -104,6 +107,58 @@ router.post('/edu-response', async (req, res) => {
     }
     const response = await getEduResonse(question)
     res.status(200).send({ response })
+})
+
+router.post('/convert-text-to-pdf', async (req, res) => {
+    const { content } = req.body as { content: string }
+
+    if (!content) {
+        return res.status(400).send('Text and title are required.')
+    }
+
+    try {
+        const pdfBuffer = await generatePDF({ content });
+
+        res.set({
+            'Content-Type': 'application/pdf',
+            'Content-Disposition': 'attachment; filename="output.pdf"',
+            'Content-Length': pdfBuffer.length
+        });
+
+        res.send(pdfBuffer);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Erro ao gerar o PDF');
+    }
+})
+
+router.post('/generate-educational-resource', upload.fields([{name: 'audio'}, { name: 'document' }]) , async (req, res) => {
+    const { youtubeLink, intructions } = req.body as ResourcesUploaded
+    const { audio, document } = req.files as { audio: Express.Multer.File[], document: Express.Multer.File[] }
+
+    if(!youtubeLink && !audio && !document) {
+        return res.status(400).send('Missing parameters')
+    }
+
+    const audioFile = audio ? audio[0] : null
+    const documentFile = document ? document[0] : null
+
+    const data = await generateEducationalResource({ youtubeLink, document: documentFile, audio: audioFile, intructions });
+
+    try {
+        const pdfBuffer = await generatePDF(data);
+
+        res.set({
+            'Content-Type': 'application/pdf',
+            'Content-Disposition': 'attachment; filename="output.pdf"',
+            'Content-Length': pdfBuffer.length
+        });
+
+        res.send(pdfBuffer);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Erro ao gerar o PDF');
+    }
 })
 
 export default router
