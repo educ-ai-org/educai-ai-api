@@ -6,13 +6,14 @@ import generateMaterial from '../generateMaterial/generateMaterial'
 
 async function generatePDF(data: { content: string }) {
 
-	const iaMaterial = generateMaterial(data)
+	const iaMaterial = await generateMaterial(data)
+	const newData = { content: iaMaterial }
 	const templateHtml = fs.readFileSync('./src/assets/ContentTemplate.html', 'utf8')
 	const headerHtml = fs.readFileSync('./src/assets/HeaderAndFooterTemplate.html', 'utf8')
 	const footerHtml = fs.readFileSync('./src/assets/HeaderAndFooterTemplate.html', 'utf8')
 
 	const template = Handlebars.compile(templateHtml)
-	const htmlContent = template(iaMaterial)
+	const htmlContent = template(newData)
 
 	const browser = await puppeteer.launch()
 	const page = await browser.newPage()
