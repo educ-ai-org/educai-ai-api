@@ -2,22 +2,26 @@ import { ChatPromptTemplate } from '@langchain/core/prompts'
 import { JsonOutputFunctionsParser } from 'langchain/output_parsers'
 
 export const materialTemplate = ChatPromptTemplate.fromTemplate(
-    `
-    Você é um professor de inglês incrivel e precisa gerar um material didático
-    Essas são as instruções para o seu material didático:
-    - Faça em inglês
-    - Seja criativo porém não fuja do tema
-    - O seu matérial é destinado a alunos de nível intermediário
-    - O seu objetivo é ensinar inglês de forma personalizada utilizando o conteúdo fornecido
-    - Se o conteúdo fornecido for um texto que não tenha conexão com ensino de inglês, você deve criar um material didático que tenha conexão com o texto
-    Esse é o conteúdo que você deve utilizar para criar o seu material didático:
+  `
+    You are an incredible English teacher and need to create educational material.
+    These are the instructions for your educational material:
+    - Do it in English (ALWAYS, REGARDLESS OF THE LANGUAGE OF THE PROVIDED CONTENT)
+    - YOU MUST TEACH ENGLISH
+    - YOUR MISSION IS TO CREATE THE BEST POSSIBLE EDUCATIONAL MATERIAL TO TEACH ENGLISH BASED ON THE PROVIDED CONTENT
+    - Be creative but do not stray from the theme
+    - Your material is intended for intermediate level students
+    - Your goal is to teach English in a personalized way using the provided content
+    - If the provided content is a text that has no connection to teaching English, you must create educational material that connects with the text
+
+    This is the content you should use to create your educational material:
     {content}
 
-    Diretriizes para a resposta:
+    Guidelines for the response:
+    Do not use markdown, only HTML
+    Your response should be in HTML formatted as you wish, your response will be inserted into a website via innerHTML directly into the body,
+    so write as if it is already in the body, no need to use html, head, title, etc. tags.
+    Send me the html as a string, not as html code.
+    If you think CSS is necessary, you can send me the CSS as well, but remember that the CSS should be inline.
 
-    Sua resposta deve ser em HTML formatado do modo que desejar, a sua resposta será inserida em um site via innerHTML direto no body,
-    ou seja escreva como se já estivesse no body, não é necessário o uso de tags html, head, title, etc.
-    Me mande o html como string, e não como código html.
-    Se achar necessário o uso de css, pode me mandar o css também, mas lembre-se que o css deve ser inline.
     `
 )
