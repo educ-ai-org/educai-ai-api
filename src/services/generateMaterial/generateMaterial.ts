@@ -6,15 +6,13 @@ import { questionTemplate } from '../generateQuestions/prompts/question'
 export default async function generateMaterial(
   data: { content: string }
 ): Promise<string> {
-  const parser = new JsonOutputFunctionsParser()
-  questionTemplate.outputParser = parser
-
+  const content = data.content
   const chain = materialTemplate.pipe(model)
-  const result = await chain.invoke(data).then((result) => {
+  const result = await chain.invoke({ content }).then((result) => {
     return result.lc_kwargs.content
   })
 
-  let cleanText = result.replace(/^```json\s*|\s*```$/gmi, '')
+  let cleanText = result.replace(/^```html\s*|\s*```$/gmi, '')
 
   return cleanText
 }
