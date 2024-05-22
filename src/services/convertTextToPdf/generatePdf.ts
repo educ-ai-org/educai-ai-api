@@ -1,20 +1,23 @@
-import fs from 'fs';
+import fs from 'fs'
 import Handlebars from 'handlebars'
 import puppeteer from 'puppeteer'
-// import path from 'path';
+import generateMaterial from '../generateMaterial/generateMaterial'
+// import path from 'path'
 
 async function generatePDF(data: { content: string }) {
-	const templateHtml = fs.readFileSync('./src/assets/ContentTemplate.html', 'utf8');
-	const headerHtml = fs.readFileSync('./src/assets/HeaderAndFooterTemplate.html', 'utf8');
-	const footerHtml = fs.readFileSync('./src/assets/HeaderAndFooterTemplate.html', 'utf8');
-  
-	const template = Handlebars.compile(templateHtml);
-	const htmlContent = template(data);
-  
-	const browser = await puppeteer.launch();
-	const page = await browser.newPage();
 
-	await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
+	const iaMaterial = generateMaterial(data)
+	const templateHtml = fs.readFileSync('./src/assets/ContentTemplate.html', 'utf8')
+	const headerHtml = fs.readFileSync('./src/assets/HeaderAndFooterTemplate.html', 'utf8')
+	const footerHtml = fs.readFileSync('./src/assets/HeaderAndFooterTemplate.html', 'utf8')
+
+	const template = Handlebars.compile(templateHtml)
+	const htmlContent = template(iaMaterial)
+
+	const browser = await puppeteer.launch()
+	const page = await browser.newPage()
+
+	await page.setContent(htmlContent, { waitUntil: 'networkidle0' })
 
 	const pdfBuffer = await page.pdf({
 		format: 'A4',
@@ -23,13 +26,13 @@ async function generatePDF(data: { content: string }) {
 		headerTemplate: headerHtml,
 		footerTemplate: footerHtml,
 		margin: { top: '100px', bottom: '100px', left: '20px', right: '20px' }
-	});
-  
-	await browser.close();
-	// const pdfPath = path.join(__dirname, 'output.pdf');
-	// fs.writeFileSync(pdfPath, pdfBuffer);
+	})
 
-	return pdfBuffer;
+	await browser.close()
+	// const pdfPath = path.join(__dirname, 'output.pdf')
+	// fs.writeFileSync(pdfPath, pdfBuffer)
+
+	return pdfBuffer
 }
 
-export default generatePDF;
+export default generatePDF
