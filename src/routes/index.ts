@@ -11,6 +11,7 @@ import getEduResonse from '../services/getEduResponse/getEduResponse'
 import generatePDF from '../services/convertTextToPdf/generatePdf'
 import { generateEducationalResource } from '../services/generateEducationalResource/generateEducationalResource'
 import { ResourcesUploaded } from '../models/ResourcesUploaded'
+import { generateQuestion } from '../services/generateQuestion/generateQuestion'
 
 const router = express.Router()
 const upload = multer({ storage: multer.memoryStorage() })
@@ -71,7 +72,7 @@ router.post('/scrape-url', async (req, res) => {
     res.send({ text })
 })
 
-router.post('/generate-question', async (req, res) => {
+router.post('/generate-questions', async (req, res) => {
     const { text, numberOfQuestions } = req.body
     if (!text) {
         return res.status(400).send('Text is required.')
@@ -136,7 +137,7 @@ router.post('/generate-educational-resource', upload.fields([{name: 'audio'}, { 
     const { youtubeLink, intructions } = req.body as ResourcesUploaded
     const { audio, document } = req.files as { audio: Express.Multer.File[], document: Express.Multer.File[] }
 
-    if(!youtubeLink && !audio && !document) {
+    if(!youtubeLink && !audio && !document && !intructions) {
         return res.status(400).send('Missing parameters')
     }
 
@@ -158,6 +159,27 @@ router.post('/generate-educational-resource', upload.fields([{name: 'audio'}, { 
     } catch (error) {
         console.error(error);
         res.status(500).send('Erro ao gerar o PDF');
+    }
+})
+
+router.post('/generate-question', upload.fields([{name: 'audio'}, { name: 'document' }]) , async (req, res) => {
+    const { youtubeLink, intructions } = req.body as ResourcesUploaded
+    const { audio, document } = req.files as { audio: Express.Multer.File[], document: Express.Multer.File[] }
+
+    if(!youtubeLink && !audio && !document && !intructions) {
+        return res.status(400).send('Missing parameters')
+    }
+
+    const audioFile = audio ? audio[0] : null
+    const documentFile = document ? document[0] : null
+
+    try {
+        const question = await generateQuestion({ youtubeLink, document: documentFile, audio: audioFile, intructions });
+
+        res.send(question);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Erro ao gerar a questão!');
     }
 })
 
