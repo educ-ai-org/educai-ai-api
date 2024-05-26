@@ -13,7 +13,10 @@ async function generateQuestions(text: string, questionsNumber: number) {
 
     const result = await chain.invoke({
         text: text,
-        number: questions
+        number: questions,
+        difficulty: 'medium',
+        theme: 'verb to be',
+        relatedTo: 'fortnite'
     }).then((result) => {
         return result.lc_kwargs.content
     })
