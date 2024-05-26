@@ -134,17 +134,18 @@ router.post('/convert-text-to-pdf', async (req, res) => {
 })
 
 router.post('/generate-educational-resource', upload.fields([{name: 'audio'}, { name: 'document' }]) , async (req, res) => {
-    const { youtubeLink, intructions } = req.body as ResourcesUploaded
+    const { youtubeLink, instructions } = req.body as ResourcesUploaded
+    
     const { audio, document } = req.files as { audio: Express.Multer.File[], document: Express.Multer.File[] }
 
-    if(!youtubeLink && !audio && !document && !intructions) {
+    if(!youtubeLink && !audio && !document && !instructions) {
         return res.status(400).send('Missing parameters')
     }
 
     const audioFile = audio ? audio[0] : null
     const documentFile = document ? document[0] : null
 
-    const data = await generateEducationalResource({ youtubeLink, document: documentFile, audio: audioFile, intructions });
+    const data = await generateEducationalResource({ youtubeLink, document: documentFile, audio: audioFile, instructions });
 
     try {
         const pdfBuffer = await generatePDF(data);
@@ -162,11 +163,11 @@ router.post('/generate-educational-resource', upload.fields([{name: 'audio'}, { 
     }
 })
 
-router.post('/generate-question', upload.fields([{name: 'audio'}, { name: 'document' }]) , async (req, res) => {
-    const { youtubeLink, intructions } = req.body as ResourcesUploaded
+router.post('/generate-question', upload.fields([{name: 'audio'}, { name: 'document' }]), async (req, res) => {
+    const { youtubeLink, instructions } = req.body as ResourcesUploaded
     const { audio, document } = req.files as { audio: Express.Multer.File[], document: Express.Multer.File[] }
 
-    if(!youtubeLink && !audio && !document && !intructions) {
+    if(!youtubeLink && !audio && !document && !instructions) {
         return res.status(400).send('Missing parameters')
     }
 
@@ -174,7 +175,7 @@ router.post('/generate-question', upload.fields([{name: 'audio'}, { name: 'docum
     const documentFile = document ? document[0] : null
 
     try {
-        const question = await generateQuestion({ youtubeLink, document: documentFile, audio: audioFile, intructions });
+        const question = await generateQuestion({ youtubeLink, document: documentFile, audio: audioFile, instructions });
 
         res.send(question);
     } catch (error) {

@@ -5,10 +5,10 @@ export async function generateQuestion({
     youtubeLink,
     document,
     audio,
-    intructions,
+    instructions,
 }: ResourcesUploaded): Promise<Question> {
     return {
-        description: 'QUESTÃO 1 - Complete corretamente: We _______ an interesting movie tonight',
+        description: 'Complete corretamente: We _______ an interesting movie tonight',
         correctAnswerKey: 'c',
         options: [
             {
