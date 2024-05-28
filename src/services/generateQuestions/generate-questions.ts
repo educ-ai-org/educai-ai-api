@@ -12,7 +12,7 @@ async function generateQuestions(text: string, questionsNumber: number, level: s
 
     const chain = questionTemplate.pipe(model)
 
-    const result = await chain.invoke({ text: text, number: questions, level, theme, relatedTheme }).then((result) => {
+    const result = await chain.invoke({ text: text, number: questions, difficulty: level, theme: theme, relatedTo: relatedTheme }).then((result) => {
         return result.lc_kwargs.content
     })
 
