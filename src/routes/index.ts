@@ -72,12 +72,12 @@ router.post('/scrape-url', async (req, res) => {
     res.send({ text })
 })
 
-router.post('/generate-questions', async (req, res) => {
-    const { text, numberOfQuestions } = req.body
+router.post('/generate-question', async (req, res) => {
+    const { text, numberOfQuestions, level, theme, relatedTheme } = req.body
     if (!text) {
         return res.status(400).send('Text is required.')
     }
-    const response = await generateQuestions(text, numberOfQuestions)
+    const response = await generateQuestions(text, numberOfQuestions, level, theme, relatedTheme)
     res.send(response)
 })
 
@@ -135,7 +135,6 @@ router.post('/convert-text-to-pdf', async (req, res) => {
 
 router.post('/generate-educational-resource', upload.fields([{name: 'audio'}, { name: 'document' }]) , async (req, res) => {
     const { youtubeLink, instructions } = req.body as ResourcesUploaded
-    
     const { audio, document } = req.files as { audio: Express.Multer.File[], document: Express.Multer.File[] }
 
     if(!youtubeLink && !audio && !document && !instructions) {

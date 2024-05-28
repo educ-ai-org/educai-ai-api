@@ -14,6 +14,10 @@ export async function generateEducationalResource({ youtubeLink, document, audio
 		content += text
 	}
 
+	if(instructions) [
+		content += instructions
+	]
+
 	if(document) {
 		let text
         switch (document.mimetype) {
