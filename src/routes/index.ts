@@ -72,11 +72,11 @@ router.post('/scrape-url', async (req, res) => {
 })
 
 router.post('/generate-question', async (req, res) => {
-    const { text, numberOfQuestions } = req.body
+    const { text, numberOfQuestions, level, theme, relatedTheme } = req.body
     if (!text) {
         return res.status(400).send('Text is required.')
     }
-    const response = await generateQuestions(text, numberOfQuestions)
+    const response = await generateQuestions(text, numberOfQuestions, level, theme, relatedTheme)
     res.send(response)
 })
 
