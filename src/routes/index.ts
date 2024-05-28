@@ -72,11 +72,11 @@ router.post('/scrape-url', async (req, res) => {
 })
 
 router.post('/generate-question', async (req, res) => {
-    const { text, numberOfQuestions } = req.body
+    const { text, numberOfQuestions, level, theme, relatedTheme } = req.body
     if (!text) {
         return res.status(400).send('Text is required.')
     }
-    const response = await generateQuestions(text, numberOfQuestions)
+    const response = await generateQuestions(text, numberOfQuestions, level, theme, relatedTheme)
     res.send(response)
 })
 
@@ -133,7 +133,7 @@ router.post('/convert-text-to-pdf', async (req, res) => {
 })
 
 router.post('/generate-educational-resource', upload.fields([{name: 'audio'}, { name: 'document' }]) , async (req, res) => {
-    const { youtubeLink, intructions } = req.body as ResourcesUploaded
+    const { youtubeLink, instructions } = req.body as ResourcesUploaded
     const { audio, document } = req.files as { audio: Express.Multer.File[], document: Express.Multer.File[] }
 
     if(!youtubeLink && !audio && !document) {
@@ -143,7 +143,7 @@ router.post('/generate-educational-resource', upload.fields([{name: 'audio'}, { 
     const audioFile = audio ? audio[0] : null
     const documentFile = document ? document[0] : null
 
-    const data = await generateEducationalResource({ youtubeLink, document: documentFile, audio: audioFile, intructions });
+    const data = await generateEducationalResource({ youtubeLink, document: documentFile, audio: audioFile, instructions });
 
     try {
         const pdfBuffer = await generatePDF(data);

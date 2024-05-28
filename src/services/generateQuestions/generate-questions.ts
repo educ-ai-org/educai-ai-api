@@ -2,7 +2,8 @@ import model from '../../clients/google-client'
 import { questionTemplate } from './prompts/question'
 import { JsonOutputFunctionsParser } from 'langchain/output_parsers'
 
-async function generateQuestions(text: string, questionsNumber: number) {
+
+async function generateQuestions(text: string, questionsNumber: number, level: string, theme: string, relatedTheme: string) {
 
     const parser = new JsonOutputFunctionsParser()
     questionTemplate.outputParser = parser
@@ -11,13 +12,7 @@ async function generateQuestions(text: string, questionsNumber: number) {
 
     const chain = questionTemplate.pipe(model)
 
-    const result = await chain.invoke({
-        text: text,
-        number: questions,
-        difficulty: 'medium',
-        theme: 'verb to be',
-        relatedTo: 'fortnite'
-    }).then((result) => {
+    const result = await chain.invoke({ text: text, number: questions, level, theme, relatedTheme }).then((result) => {
         return result.lc_kwargs.content
     })
 
