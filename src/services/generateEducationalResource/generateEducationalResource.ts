@@ -5,7 +5,7 @@ import PdfParse from 'pdf-parse'
 import getTranscription from '../getTranscription/getTranscription'
 import uploadBuffer from '../getTranscription/uploadBuffer'
 
-export async function generateEducationalResource({ youtubeLink, document, audio, intructions }: ResourcesUploaded): Promise<{ content: string }> {
+export async function generateEducationalResource({ youtubeLink, document, audio, instructions }: ResourcesUploaded): Promise<{ content: string }> {
 	let content = '';
 	
 	if(youtubeLink) {
@@ -13,6 +13,10 @@ export async function generateEducationalResource({ youtubeLink, document, audio
 
 		content += text
 	}
+
+	if(instructions) [
+		content += instructions
+	]
 
 	if(document) {
 		let text
