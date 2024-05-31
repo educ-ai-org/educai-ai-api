@@ -165,7 +165,8 @@ router.post('/generate-questions', upload.fields([{name: 'audio'}, { name: 'docu
 
     try {
         const data = await getEducationalResource({ youtubeLink, document: documentFile, audio: audioFile, instructions })
-        const question = await generateQuestions(data.content, numberOfQuestions, level, theme, relatedTheme)
+        const questions = await generateQuestions(data.content, numberOfQuestions, level, theme, relatedTheme)
+        const question = await JSON.parse(questions)[0]
 
         res.send(question);
     } catch (error) {
