@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "start": "dotenv -e .env ts-node src/app.ts"
+    "start": "dotenv -e .env ts-node src/app.ts",
+    "build": "tsc"
   },
   "dependencies": {
     "@google-cloud/speech": "^6.5.0",

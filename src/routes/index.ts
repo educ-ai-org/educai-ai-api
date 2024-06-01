@@ -9,7 +9,7 @@ import getTranscription from '../services/getTranscription/getTranscription'
 import uploadBuffer from '../services/getTranscription/uploadBuffer'
 import getEduResonse from '../services/getEduResponse/getEduResponse'
 import generatePDF from '../services/convertTextToPdf/generatePdf'
-import { generateEducationalResource } from '../services/generateEducationalResource/generateEducationalResource'
+import { getEducationalResource } from '../services/getEducationalResource/getEducationalResource'
 import { ResourcesUploaded } from '../models/ResourcesUploaded'
 
 const router = express.Router()
@@ -71,15 +71,6 @@ router.post('/scrape-url', async (req, res) => {
     res.send({ text })
 })
 
-router.post('/generate-question', async (req, res) => {
-    const { text, numberOfQuestions, level, theme, relatedTheme } = req.body
-    if (!text) {
-        return res.status(400).send('Text is required.')
-    }
-    const response = await generateQuestions(text, numberOfQuestions, level, theme, relatedTheme)
-    res.send(response)
-})
-
 router.post('/transcription', upload.single('file'), async (req, res) => {
 
     if (!req.file) {
@@ -136,14 +127,14 @@ router.post('/generate-educational-resource', upload.fields([{name: 'audio'}, { 
     const { youtubeLink, instructions } = req.body as ResourcesUploaded
     const { audio, document } = req.files as { audio: Express.Multer.File[], document: Express.Multer.File[] }
 
-    if(!youtubeLink && !audio && !document) {
+    if(!youtubeLink && !audio && !document && !instructions) {
         return res.status(400).send('Missing parameters')
     }
 
     const audioFile = audio ? audio[0] : null
     const documentFile = document ? document[0] : null
 
-    const data = await generateEducationalResource({ youtubeLink, document: documentFile, audio: audioFile, instructions });
+    const data = await getEducationalResource({ youtubeLink, document: documentFile, audio: audioFile, instructions });
 
     try {
         const pdfBuffer = await generatePDF(data);
@@ -158,6 +149,29 @@ router.post('/generate-educational-resource', upload.fields([{name: 'audio'}, { 
     } catch (error) {
         console.error(error);
         res.status(500).send('Erro ao gerar o PDF');
+    }
+})
+
+router.post('/generate-questions', upload.fields([{name: 'audio'}, { name: 'document' }]), async (req, res) => {
+    const { youtubeLink, instructions, level, theme, relatedTheme, numberOfQuestions } = req.body
+    const { audio, document } = req.files as { audio: Express.Multer.File[], document: Express.Multer.File[] }
+
+    if(!youtubeLink && !audio && !document && !instructions) {
+        return res.status(400).send('Missing parameters')
+    }
+
+    const audioFile = audio ? audio[0] : null
+    const documentFile = document ? document[0] : null
+
+    try {
+        const data = await getEducationalResource({ youtubeLink, document: documentFile, audio: audioFile, instructions })
+        const questions = await generateQuestions(data.content, numberOfQuestions, level, theme, relatedTheme)
+        const question = await JSON.parse(questions)[0]
+
+        res.send(question);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Erro ao gerar a questão!');
     }
 })
 
