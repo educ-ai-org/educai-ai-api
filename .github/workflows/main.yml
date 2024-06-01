@@ -65,4 +65,4 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.AZURE_VM_PORT }}
           source: "ia-api/"
-          target: "/home/educai/ia-api"
+          target: "/home/educai"
