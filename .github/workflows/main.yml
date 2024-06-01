@@ -1,0 +1,68 @@
+name: Educ.AI Artificial Intelligence API
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  CI:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Bump version and push tag
+      id: tag_version
+      uses: mathieudutour/github-tag-action@v5.6
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        default_bump: patch
+        initial_version: '1.0.0' # Sets the initial version if no tags exist
+        release_branches: main  # Ensures tags are only pushed on the main branch
+        
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 18.x
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Build
+      run: npm run build
+
+    - name: Create .env file from secret
+      run: echo "${{ secrets.ENV_FILE }}" > .env
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ia-api
+        path: |
+          dist/
+          .env
+        
+  CD:
+    needs: [CI]
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Download Artifacts
+      uses: actions/download-artifact@v4
+      with:
+          name: ia-api
+          path: ia-api/
+          
+    - name: Deploy to Azure VM
+      uses: appleboy/scp-action@v0.1.7
+      with:
+          host: ${{ secrets.AZURE_VM_HOST }}
+          username: ${{ secrets.AZURE_VM_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.AZURE_VM_PORT }}
+          source: "ia-api/"
+          target: "/home/educai/ia-api"
