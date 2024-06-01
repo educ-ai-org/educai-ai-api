@@ -43,6 +43,7 @@ jobs:
         path: |
           dist/
           .env
+          package.json
         
   CD:
     needs: [CI]
@@ -66,3 +67,14 @@ jobs:
           port: ${{ secrets.AZURE_VM_PORT }}
           source: "ia-api/"
           target: "/home/educai"
+
+    - name: Run IA-API in Docker Container
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.AZURE_VM_HOST }}
+        username: ${{ secrets.AZURE_VM_USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: ${{ secrets.AZURE_VM_PORT }}
+        script: |
+          chmod +x /home/educai/script-ia-api.sh
+          sh /home/educai/script-ia-api.sh
