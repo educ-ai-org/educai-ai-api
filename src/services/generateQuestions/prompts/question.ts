@@ -29,52 +29,7 @@ export const questionTemplate = ChatPromptTemplate.fromTemplate(
     Just send me the JSON structure with the questions and answers, no text before or after the JSON structure.
     Use the following JSON structure as a guideline:
     ###
-    [
-        {{
-            "description": "Here is a sample question",
-            "correctAnswerKey": "a",
-            "options": [
-                {{
-                    "key": "a",
-                    "description": "Sample answer"
-                }},
-                {{
-                    "key": "b",
-                    "description": "Sample answer"
-                }},
-                {{
-                    "key": "c",
-                    "description": "Sample answer"
-                }},
-                {{
-                    "key": "d",
-                    "description": "Sample answer"
-                }}
-            ]
-        }},
-        {{
-            "description": "Here is a sample question",
-            "correctAnswerKey": "a",
-            "options": [
-                {{
-                    "key": "a",
-                    "description": "Sample answer"
-                }},
-                {{
-                    "key": "b",
-                    "description": "Sample answer"
-                }},
-                {{
-                    "key": "c",
-                    "description": "Sample answer"
-                }},
-                {{
-                    "key": "d",
-                    "description": "Sample answer"
-                }}
-            ]
-        }}
-    ]
+    [{{"description":"Hereisasamplequestion","correctAnswerKey":"a","options":[{{"key":"a","description":"Sampleanswer"}},{{"key":"b","description":"Sampleanswer"}},{{"key":"c","description":"Sampleanswer"}},{{"key":"d","description":"Sampleanswer"}}]}},{{"description":"Hereisasamplequestion","correctAnswerKey":"a","options":[{{"key":"a","description":"Sampleanswer"}},{{"key":"b","description":"Sampleanswer"}},{{"key":"c","description":"Sampleanswer"}},{{"key":"d","description":"Sampleanswer"}}]}}]
     ###
-    Ensure that the questions are clear, relevant to the document's content, and designed in a way that tests understanding of the material. The answers should be plausible to prevent the correct answer from being obvious, except through understanding the content.`
+    Ensure that the questions are clear, relevant to the document's content, and designed in a way that tests understanding of the material. The answers should be plausible to prevent the correct answer from being obvious, except through understanding the content. Furthermore, it is extremely important that the generated JSON makes it possible to use JavaScript's JSON parse function`
 )
