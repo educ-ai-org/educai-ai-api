@@ -148,7 +148,7 @@ router.post('/generate-educational-resource', upload.fields([{name: 'audio'}, { 
         res.send(pdfBuffer)
     } catch (error) {
         console.error(error)
-        res.status(500).send('Erro ao gerar o PDF')
+        res.status(500).send(error)
     }
 })
 
