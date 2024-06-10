@@ -8,9 +8,9 @@ async function generatePDF(data: { content: string }) {
 
 	const iaMaterial = await generateMaterial(data)
 	const newData = { content: iaMaterial }
-	const templateHtml = fs.readFileSync('./src/assets/ContentTemplate.html', 'utf8')
-	const headerHtml = fs.readFileSync('./src/assets/HeaderAndFooterTemplate.html', 'utf8')
-	const footerHtml = fs.readFileSync('./src/assets/HeaderAndFooterTemplate.html', 'utf8')
+	const templateHtml = fs.readFileSync('https://storage.googleapis.com/educai-bucket/ContentTemplate.html', 'utf8')
+	const headerHtml = fs.readFileSync('https://storage.googleapis.com/educai-bucket/HeaderAndFooterTemplate.html', 'utf8')
+	const footerHtml = fs.readFileSync('https://storage.googleapis.com/educai-bucket/HeaderAndFooterTemplate.html', 'utf8')
 
 	const template = Handlebars.compile(templateHtml)
 	const htmlContent = template(newData)
