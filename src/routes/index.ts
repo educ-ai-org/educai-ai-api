@@ -108,18 +108,18 @@ router.post('/convert-text-to-pdf', async (req, res) => {
     }
 
     try {
-        const pdfBuffer = await generatePDF({ content });
+        const pdfBuffer = await generatePDF({ content })
 
         res.set({
             'Content-Type': 'application/pdf',
-            'Content-Disposition': 'attachment; filename="output.pdf"',
+            'Content-Disposition': 'attachment filename="output.pdf"',
             'Content-Length': pdfBuffer.length
-        });
+        })
 
-        res.send(pdfBuffer);
+        res.send(pdfBuffer)
     } catch (error) {
-        console.error(error);
-        res.status(500).send('Erro ao gerar o PDF');
+        console.error(error)
+        res.status(500).send(error)
     }
 })
 
@@ -134,21 +134,21 @@ router.post('/generate-educational-resource', upload.fields([{name: 'audio'}, { 
     const audioFile = audio ? audio[0] : null
     const documentFile = document ? document[0] : null
 
-    const data = await getEducationalResource({ youtubeLink, document: documentFile, audio: audioFile, instructions });
+    const data = await getEducationalResource({ youtubeLink, document: documentFile, audio: audioFile, instructions })
 
     try {
-        const pdfBuffer = await generatePDF(data);
+        const pdfBuffer = await generatePDF(data)
 
         res.set({
             'Content-Type': 'application/pdf',
-            'Content-Disposition': 'attachment; filename="output.pdf"',
+            'Content-Disposition': 'attachment filename="output.pdf"',
             'Content-Length': pdfBuffer.length
-        });
+        })
 
-        res.send(pdfBuffer);
+        res.send(pdfBuffer)
     } catch (error) {
-        console.error(error);
-        res.status(500).send('Erro ao gerar o PDF');
+        console.error(error)
+        res.status(500).send('Erro ao gerar o PDF')
     }
 })
 
@@ -168,10 +168,10 @@ router.post('/generate-questions', upload.fields([{name: 'audio'}, { name: 'docu
         const questions = await generateQuestions(data.content, numberOfQuestions, level, theme, relatedTheme)
         const question = await JSON.parse(questions).slice(0, numberOfQuestions)
 
-        res.send(question);
+        res.send(question)
     } catch (error) {
-        console.error(error);
-        res.status(500).send('Erro ao gerar a questão!');
+        console.error(error)
+        res.status(500).send('Erro ao gerar a questão!')
     }
 })
 
