@@ -3,7 +3,7 @@ import model from '../../clients/google-client'
 import { getFeedbackFromChatTemplate } from '../getFeedback/getFeedbackFromChatTemplate'
 import generatePDF from '../convertTextToPdf/generatePdf'
 
-export default async function getEduResonse(messages: any): Promise<Buffer> {
+export default async function getFeedbackFromChat(messages: any): Promise<Buffer> {
   const parser = new JsonOutputFunctionsParser()
   getFeedbackFromChatTemplate.outputParser = parser
 
