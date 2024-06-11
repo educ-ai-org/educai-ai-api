@@ -178,11 +178,11 @@ router.post('/generate-questions', upload.fields([{name: 'audio'}, { name: 'docu
 })
 
 router.post('/feedback', async (req, res) => {
-    const { feedback } = req.body
-    if (!feedback) {
+    const { messages } = req.body
+    if (!messages) {
         return res.status(400).send('Question is required.')
     }
-    const response = await getFeedbackFromChat(feedback)
+    const response = await getFeedbackFromChat(messages)
     res.status(200).send({ response })
 })
 
