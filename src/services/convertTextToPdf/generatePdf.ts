@@ -72,7 +72,7 @@ async function generatePDF(data: { content: string }) {
 	const template = Handlebars.compile(templateHtml)
 	const htmlContent = template(newData)
 
-	const browser = await puppeteer.launch()
+	const browser = await puppeteer.launch({ headless: 'new' })
 	const page = await browser.newPage()
 
 	await page.setContent(htmlContent, { waitUntil: 'networkidle0' })
