@@ -1,8 +1,9 @@
 import { JsonOutputFunctionsParser } from 'langchain/output_parsers'
 import model from '../../clients/google-client'
 import { getFeedbackFromChatTemplate } from '../getFeedback/getFeedbackFromChatTemplate'
+import generatePDF from '../convertTextToPdf/generatePdf'
 
-export default async function getEduResonse(messages: any): Promise<string> {
+export default async function getEduResonse(messages: any): Promise<Buffer> {
   const parser = new JsonOutputFunctionsParser()
   getFeedbackFromChatTemplate.outputParser = parser
 
@@ -14,5 +15,7 @@ export default async function getEduResonse(messages: any): Promise<string> {
 
   let cleanText: string = result.replace(/^```json\s*|\s*```$/gmi, '')
 
-  return cleanText
+  const pdf = await generatePDF({ content: cleanText})
+
+  return pdf
 }
