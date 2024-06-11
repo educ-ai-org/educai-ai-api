@@ -11,6 +11,7 @@ import getEduResonse from '../services/getEduResponse/getEduResponse'
 import generatePDF from '../services/convertTextToPdf/generatePdf'
 import { getEducationalResource } from '../services/getEducationalResource/getEducationalResource'
 import { ResourcesUploaded } from '../models/ResourcesUploaded'
+import getFeedbackFromChat from '../services/getFeedback/getFeedbackFromChat'
 
 const router = express.Router()
 const upload = multer({ storage: multer.memoryStorage() })
@@ -90,6 +91,7 @@ router.post('/transcription', upload.single('file'), async (req, res) => {
         res.status(500).send(error)
     }
 })
+
 router.post('/edu-response', async (req, res) => {
     console.log('bateu no edu')
     const { question } = req.body
@@ -173,6 +175,25 @@ router.post('/generate-questions', upload.fields([{name: 'audio'}, { name: 'docu
         console.error(error)
         res.status(500).send('Erro ao gerar a questão!')
     }
+})
+
+router.post('/feedback', async (req, res) => {
+    const { messages, studentName } = req.body
+    if (!messages) {
+        return res.status(400).send('Feedback is required.')
+    }
+    if (!studentName) {
+        return res.status(400).send('Student name is required.')
+    }
+    const response = await getFeedbackFromChat(messages, studentName)
+
+    res.set({
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': `attachment; filename="output.pdf"`,
+        'Content-Length': response.length
+    })
+
+    res.status(200).send(response)
 })
 
 export default router
