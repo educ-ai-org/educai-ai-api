@@ -8,15 +8,15 @@ export type Messages = {
   isUser: boolean
 }
 
-export default async function getFeedbackFromChat(messages: Messages[]): Promise<Buffer> {
+export default async function getFeedbackFromChat(messages: Messages[], studentName: string): Promise<Buffer> {
   const parser = new JsonOutputFunctionsParser()
   getFeedbackFromChatTemplate.outputParser = parser
 
   const chain = getFeedbackFromChatTemplate.pipe(model)
 
-  const messagesString = messages.toString()
+  const messagesString = JSON.stringify(messages)
 
-  const result = await chain.invoke({ messages: messagesString }).then((result) => {
+  const result = await chain.invoke({ messages: messagesString, studentName: studentName }).then((result) => {
       return result.lc_kwargs.content
   })
 
