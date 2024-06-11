@@ -44,6 +44,7 @@ jobs:
           dist/
           .env
           package.json
+          key.json
         
   CD:
     needs: [CI]
