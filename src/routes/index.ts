@@ -186,6 +186,13 @@ router.post('/feedback', async (req, res) => {
         return res.status(400).send('Student name is required.')
     }
     const response = await getFeedbackFromChat(messages, studentName)
+
+    res.set({
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': `attachment; filename="output.pdf"`,
+        'Content-Length': response.length
+    })
+
     res.status(200).send(response)
 })
 
