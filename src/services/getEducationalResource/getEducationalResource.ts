@@ -6,41 +6,50 @@ import getTranscription from '../getTranscription/getTranscription'
 import uploadBuffer from '../getTranscription/uploadBuffer'
 
 export async function getEducationalResource({ youtubeLink, document, audio, instructions }: ResourcesUploaded): Promise<{ content: string }> {
-	let content = '';
-	
-	if(youtubeLink) {
-		const text = await getTextFromYoutube(youtubeLink)
 
-		content += text
+	let content = ''
+
+	if (youtubeLink) {
+		try {
+			const text = await getTextFromYoutube(youtubeLink)
+			content += text
+		}
+		catch (_e) {
+			throw new Error('Error getting text from youtube video')
+		}
 	}
 
-	if(instructions) [
+	if (instructions) [
 		content += instructions
 	]
 
-	if(document) {
-		let text
-        switch (document.mimetype) {
-            case 'application/pdf':
-                const pdfData = await PdfParse(document.buffer)
-                text = pdfData.text
-                break
-            case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
-                const mammothResult = await mammoth.extractRawText({ buffer: document.buffer })
-                text = mammothResult.value
-                break
-            case 'text/plain':
-                text = document.buffer.toString('utf-8')
-                break
-            case 'text/csv':
-                text = document.buffer.toString('utf-8')
-                break
-        }
+	if (document) {
+		try {
+			let text
+			switch (document.mimetype) {
+				case 'application/pdf':
+					const pdfData = await PdfParse(document.buffer)
+					text = pdfData.text
+					break
+				case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+					const mammothResult = await mammoth.extractRawText({ buffer: document.buffer })
+					text = mammothResult.value
+					break
+				case 'text/plain':
+					text = document.buffer.toString('utf-8')
+					break
+				case 'text/csv':
+					text = document.buffer.toString('utf-8')
+					break
+			}
 
-		content += text
+			content += text
+		} catch (error) {
+			throw new Error('Error getting text from document')
+		}
 	}
 
-	if(audio) {
+	if (audio) {
 		try {
 			const gsFile = await uploadBuffer(audio.buffer, audio.originalname)
 			const fileName = `gs://educai-bucket/${audio.originalname}`
@@ -48,10 +57,10 @@ export async function getEducationalResource({ youtubeLink, document, audio, ins
 
 			content += '<h1>Audio</h1>'
 			content += transcript
-		} catch (error) {
-			console.error(error)
+		} catch (_e) {
+			throw new Error('Error getting text from audio')
 		}
 	}
-	
+
 	return { content }
 }
