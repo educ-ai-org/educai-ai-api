@@ -7,12 +7,17 @@ export default async function getEduResonse(question: string): Promise<string> {
   eduTemplateResponse.outputParser = parser
 
   const chain = eduTemplateResponse.pipe(model)
+  try {
 
-  const result = await chain.invoke({ message: question }).then((result) => {
+    const result = await chain.invoke({ message: question }).then((result) => {
       return result.lc_kwargs.content
-  })
+    })
 
-  let cleanText: string = result.replace(/^```json\s*|\s*```$/gmi, '')
+    let cleanText: string = result.replace(/^```json\s*|\s*```$/gmi, '')
 
-  return cleanText
+    return cleanText
+
+  } catch (_e) {
+    throw new Error('Error getting chatbot response')
+  }
 }
