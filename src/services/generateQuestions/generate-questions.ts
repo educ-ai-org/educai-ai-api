@@ -11,14 +11,17 @@ async function generateQuestions(text: string, questionsNumber: number, level: s
     const questions = questionsNumber.toString()
 
     const chain = questionTemplate.pipe(model)
+    try {
+        const result = await chain.invoke({ text: text, number: questions, difficulty: level, theme: theme, relatedTo: relatedTheme }).then((result) => {
+            return result.lc_kwargs.content
+        })
 
-    const result = await chain.invoke({ text: text, number: questions, difficulty: level, theme: theme, relatedTo: relatedTheme }).then((result) => {
-        return result.lc_kwargs.content
-    })
+        let cleanText = result.replace(/^```json\s*|\s*```$/gmi, '')
 
-    let cleanText = result.replace(/^```json\s*|\s*```$/gmi, '')
-
-    return cleanText
+        return cleanText
+    } catch (_e) {
+        throw new Error('Error trying to generate questions')
+    }
 }
 
 export default generateQuestions
