@@ -24,7 +24,9 @@ export const getFeedbackFromChatTemplate = ChatPromptTemplate.fromTemplate(
 
     ### GUIDELINES FOR THE FEEDBACK RESPONSE
     - Respond only with the text as a string with the feedback
+    - This feedback will be placed in a PDF, so take that into consideration when writing, it will have an impact on the writing style
 
+    ### Name of the student: {studentName}
     {messages}
     `
 )
