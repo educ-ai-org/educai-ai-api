@@ -37,7 +37,7 @@ async function generatePDF(data: { content: string }) {
 		</html>`
 
 
-	const headerHtml = 
+	const headerHtml =
 	`<!DOCTYPE html>
 		<html>
 		<head>
@@ -53,7 +53,7 @@ async function generatePDF(data: { content: string }) {
 		</body>
 		</html>`
 
-	const footerHtml = 	
+	const footerHtml =
 	`<!DOCTYPE html>
 		<html>
 		<head>
@@ -72,11 +72,12 @@ async function generatePDF(data: { content: string }) {
 	const template = Handlebars.compile(templateHtml)
 	const htmlContent = template(newData)
 
-	const browser = await puppeteer.launch({ 
-		headless: 'new',
+	const browser = await puppeteer.launch({
+    headless: 'new',
+		// tirar o execPath no local
 		executablePath: '/usr/bin/chromium-browser',
-		args: ['--no-sandbox', '--disable-setuid-sandbox']
-	})
+    args: ['--no-sandbox', '--disable-setuid-sandbox']
+})
 	const page = await browser.newPage()
 
 	await page.setContent(htmlContent, { waitUntil: 'networkidle0' })
