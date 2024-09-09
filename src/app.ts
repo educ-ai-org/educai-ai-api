@@ -4,7 +4,7 @@ import router from './routes'
 const app = express()
 app.use(express.json())
 app.use((req, res, next) => {
-    const allowedOrigins = ['http://localhost:5173', 'http://20.51.193.153', 'http://educai.eastus.cloudapp.azure.com'];
+    const allowedOrigins = ['http://localhost:5173', 'http://20.51.193.153', 'http://educai.eastus.cloudapp.azure.com', "https://main.d1xp88b22uwwmk.amplifyapp.com"];
     const origin = req.headers.origin as string;
 
     if (allowedOrigins.includes(origin)) {
