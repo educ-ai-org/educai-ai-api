@@ -5,7 +5,7 @@ config();
 
 const model = new ChatGoogleGenerativeAI({
     apiKey: process.env.GOOGLE_API_KEY,
-    modelName: 'gemini-pro'
+    modelName: 'gemini-1.5-pro'
 })
 
 export default model
