@@ -67,7 +67,7 @@ jobs:
           key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
           port: ${{ secrets.AWS_VM_PORT }}
           source: "ia-api/"
-          target: "/home/educai"
+          target: "/home/ubuntu"
 
     - name: Run IA-API in Docker Container
       uses: appleboy/ssh-action@v1.0.3
