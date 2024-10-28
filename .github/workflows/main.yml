@@ -59,7 +59,7 @@ jobs:
           name: ia-api
           path: ia-api/
           
-    - name: Deploy to Azure VM
+    - name: Deploy to AWS VM
       uses: appleboy/scp-action@v0.1.7
       with:
           host: ${{ secrets.AWS_VM_HOST }}
