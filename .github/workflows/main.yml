@@ -33,8 +33,11 @@ jobs:
     - name: Build
       run: npm run build
   
-    - name: Create .env file from secret
-      run: echo "teste" | tee $GITHUB_WORKSPACE/.env
+    - name: 'Create env file'
+      run: |
+        touch .env
+        echo ${{ secrets.ENV_FILE }} >> .env
+        cat .env
 
     - name: Check .env file
       run: cat $GITHUB_WORKSPACE/.env
