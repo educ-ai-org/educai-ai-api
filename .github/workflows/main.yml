@@ -34,7 +34,7 @@ jobs:
       run: npm run build
 
     - name: Create .env file from secret
-      run: printf "%s" "${{ secrets.ENV_FILE }}" > .env
+      run: echo "teste" > .env
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
