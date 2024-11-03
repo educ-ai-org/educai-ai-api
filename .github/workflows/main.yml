@@ -36,14 +36,7 @@ jobs:
     - name: 'Create env file'
       run: |
         touch .env
-        echo ${{ secrets.ENV_FILE }} >> .env
-        cat .env
-
-    - name: Check .env file
-      run: cat $GITHUB_WORKSPACE/.env
-
-    - name: Check files
-      run: ls -l $GITHUB_WORKSPACE
+        echo GOOGLE_API_KEY = ${{ secrets.ENV_FILE }} >> .env
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
@@ -51,7 +44,7 @@ jobs:
         name: ia-api
         path: |
           dist/
-          $GITHUB_WORKSPACE/.env
+          .env
           package.json
           key.json
         
