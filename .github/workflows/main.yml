@@ -57,8 +57,7 @@ jobs:
 
     - name: 'Create env file'
       run: |
-        touch ia-api/.env
-        echo GOOGLE_API_KEY = ${{ secrets.ENV_FILE }} >> .env
+        echo ${{ secrets.ENV_FILE }} >> ia-api/.env
           
     - name: Deploy to AWS VM
       uses: appleboy/scp-action@v0.1.7
