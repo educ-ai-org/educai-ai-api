@@ -32,11 +32,6 @@ jobs:
 
     - name: Build
       run: npm run build
-  
-    - name: 'Create env file'
-      run: |
-        touch .env
-        echo GOOGLE_API_KEY = ${{ secrets.ENV_FILE }} >> .env
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
@@ -44,7 +39,6 @@ jobs:
         name: ia-api
         path: |
           dist/
-          .env
           package.json
           key.json
         
@@ -60,6 +54,11 @@ jobs:
       with:
           name: ia-api
           path: ia-api/
+
+    - name: 'Create env file'
+      run: |
+        touch ia-api/.env
+        echo GOOGLE_API_KEY = ${{ secrets.ENV_FILE }} >> .env
           
     - name: Deploy to AWS VM
       uses: appleboy/scp-action@v0.1.7
