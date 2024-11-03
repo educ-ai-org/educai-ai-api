@@ -34,7 +34,7 @@ jobs:
       run: npm run build
   
     - name: Create .env file from secret
-      run: echo "teste" > $GITHUB_WORKSPACE/.env
+      run: echo "teste" | tee $GITHUB_WORKSPACE/.env
 
     - name: Check .env file
       run: cat $GITHUB_WORKSPACE/.env
