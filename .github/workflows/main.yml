@@ -34,13 +34,13 @@ jobs:
       run: npm run build
   
     - name: Create .env file from secret
-      run: echo "teste" > .env
+      run: echo "teste" > $GITHUB_WORKSPACE/.env
 
     - name: Check .env file
-      run: cat .env
+      run: cat $GITHUB_WORKSPACE/.env
 
     - name: Check files
-      run: ls -l
+      run: ls -l $GITHUB_WORKSPACE
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
@@ -48,7 +48,7 @@ jobs:
         name: ia-api
         path: |
           dist/
-          .env
+          $GITHUB_WORKSPACE/.env
           package.json
           key.json
         
