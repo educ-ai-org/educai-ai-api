@@ -75,7 +75,7 @@ async function generatePDF(data: { content: string }) {
 	const browser = await puppeteer.launch({
     headless: 'new',
 		// tirar o execPath no local
-		executablePath: '/usr/bin/chromium-browser',
+		executablePath: '/usr/bin/chromium',
     args: ['--no-sandbox', '--disable-setuid-sandbox']
 })
 	const page = await browser.newPage()
