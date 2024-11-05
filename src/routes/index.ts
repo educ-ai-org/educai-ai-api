@@ -103,14 +103,14 @@ router.post('/edu-response', async (req, res) => {
 })
 
 router.post('/convert-text-to-pdf', async (req, res) => {
-    const { content } = req.body as { content: string }
+    const { content, model } = req.body as { content: string, model: string }
 
     if (!content) {
         return res.status(400).send('Text and title are required.')
     }
 
     try {
-        const pdfBuffer = await generatePDF({ content })
+        const pdfBuffer = await generatePDF({ content, model })
 
         res.set({
             'Content-Type': 'application/pdf',
@@ -126,7 +126,7 @@ router.post('/convert-text-to-pdf', async (req, res) => {
 })
 
 router.post('/generate-educational-resource', upload.fields([{name: 'audio'}, { name: 'document' }]) , async (req, res) => {
-    const { youtubeLink, instructions } = req.body as ResourcesUploaded
+    const { youtubeLink, instructions, model } = req.body as ResourcesUploaded
     const { audio, document } = req.files as { audio: Express.Multer.File[], document: Express.Multer.File[] }
 
     if(!youtubeLink && !audio && !document && !instructions) {
@@ -136,7 +136,10 @@ router.post('/generate-educational-resource', upload.fields([{name: 'audio'}, { 
     const audioFile = audio ? audio[0] : null
     const documentFile = document ? document[0] : null
 
-    const data = await getEducationalResource({ youtubeLink, document: documentFile, audio: audioFile, instructions })
+    let data = {
+        content: await getEducationalResource({ youtubeLink, document: documentFile, audio: audioFile, instructions }),
+        model: model ?? 'gemini'
+    }
 
     try {
         const pdfBuffer = await generatePDF(data)
@@ -155,7 +158,7 @@ router.post('/generate-educational-resource', upload.fields([{name: 'audio'}, { 
 })
 
 router.post('/generate-questions', upload.fields([{name: 'audio'}, { name: 'document' }]), async (req, res) => {
-    const { youtubeLink, instructions, level, theme, relatedTheme, numberOfQuestions } = req.body
+    const { youtubeLink, instructions, level, theme, relatedTheme, numberOfQuestions, model } = req.body
     const { audio, document } = req.files as { audio: Express.Multer.File[], document: Express.Multer.File[] }
 
     if(!youtubeLink && !audio && !document && !instructions) {
@@ -166,7 +169,10 @@ router.post('/generate-questions', upload.fields([{name: 'audio'}, { name: 'docu
     const documentFile = document ? document[0] : null
 
     try {
-        const data = await getEducationalResource({ youtubeLink, document: documentFile, audio: audioFile, instructions })
+        const data = {
+            content: await getEducationalResource({ youtubeLink, document: documentFile, audio: audioFile, instructions }),
+            model: model ?? 'gemini'
+        }
         const questions = await generateQuestions(data.content, numberOfQuestions, level, theme, relatedTheme)
         const question = await JSON.parse(questions).slice(0, numberOfQuestions)
 
@@ -178,14 +184,14 @@ router.post('/generate-questions', upload.fields([{name: 'audio'}, { name: 'docu
 })
 
 router.post('/feedback', async (req, res) => {
-    const { messages, studentName } = req.body
+    const { messages, studentName, model } = req.body
     if (!messages) {
         return res.status(400).send('Feedback is required.')
     }
     if (!studentName) {
         return res.status(400).send('Student name is required.')
     }
-    const response = await getFeedbackFromChat(messages, studentName)
+    const response = await getFeedbackFromChat(messages, studentName, model)
 
     res.set({
         'Content-Type': 'application/pdf',

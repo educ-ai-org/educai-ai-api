@@ -2,7 +2,7 @@ import Handlebars from 'handlebars'
 import puppeteer from 'puppeteer'
 import generateMaterial from '../generateMaterial/generateMaterial'
 
-async function generatePDF(data: { content: string }) {
+async function generatePDF(data: { content: string, model: string }) {
 
 	const iaMaterial = await generateMaterial(data)
 	const newData = { content: iaMaterial }

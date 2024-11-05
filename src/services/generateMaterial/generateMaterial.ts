@@ -1,18 +1,13 @@
-import { materialTemplate } from './prompts/materialTemplate'
-import model from '../../clients/google-client'
-import { JsonOutputFunctionsParser } from 'langchain/output_parsers'
-import { questionTemplate } from '../generateQuestions/prompts/question'
+import generateMaterialGemini from './generateMaterialGemini'
+import generateMaterialOpenAI from './generateMaterialOpenAI'
 
 export default async function generateMaterial(
-  data: { content: string }
+  data: { content: string, model: string }
 ): Promise<string> {
-  const content = data.content
-  const chain = materialTemplate.pipe(model)
-  const result = await chain.invoke({ content }).then((result) => {
-    return result.lc_kwargs.content
-  })
 
-  let cleanText = result.replace(/^```html\s*|\s*```$/gmi, '')
+  let result = ''
+  if (data.model === 'gemini') result = await generateMaterialGemini(data)
+  if (data.model.includes('openai')) result = await generateMaterialOpenAI(data)
 
-  return cleanText
+  return result
 }
