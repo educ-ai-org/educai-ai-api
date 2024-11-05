@@ -4,6 +4,12 @@ import generateMaterial from '../generateMaterial/generateMaterial'
 
 async function generatePDF(data: { content: string, model: string }) {
 
+	type BrowserOptions = {
+		headless: boolean
+		args: string[]
+		executablePath?: string
+	}
+
 	const iaMaterial = await generateMaterial(data)
 	const newData = { content: iaMaterial }
 	const templateHtml =
@@ -38,7 +44,7 @@ async function generatePDF(data: { content: string, model: string }) {
 
 
 	const headerHtml =
-	`<!DOCTYPE html>
+		`<!DOCTYPE html>
 		<html>
 		<head>
   		<style>
@@ -54,7 +60,7 @@ async function generatePDF(data: { content: string, model: string }) {
 		</html>`
 
 	const footerHtml =
-	`<!DOCTYPE html>
+		`<!DOCTYPE html>
 		<html>
 		<head>
   		<style>
@@ -72,12 +78,16 @@ async function generatePDF(data: { content: string, model: string }) {
 	const template = Handlebars.compile(templateHtml)
 	const htmlContent = template(newData)
 
-	const browser = await puppeteer.launch({
-    headless: 'new',
-		// tirar o execPath no local
-		executablePath: '/usr/bin/chromium',
-    args: ['--no-sandbox', '--disable-setuid-sandbox']
-})
+	const browserOptions: BrowserOptions = {
+		headless: true,
+		args: ['--no-sandbox', '--disable-setuid-sandbox'],
+	}
+
+	const environment = process.env.ENVIROMENT
+
+	if (environment !== 'development') browserOptions.executablePath = '/usr/bin/chromium-browser'
+
+	const browser = await puppeteer.launch(browserOptions)
 	const page = await browser.newPage()
 
 	await page.setContent(htmlContent, { waitUntil: 'networkidle0' })
