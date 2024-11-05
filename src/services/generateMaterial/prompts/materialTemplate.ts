@@ -1,7 +1,6 @@
 import { ChatPromptTemplate } from '@langchain/core/prompts'
 
-export const materialTemplate = ChatPromptTemplate.fromTemplate(
-  `
+export const materialTemplateString = `
     You are an incredible English teacher and need to create educational material.
     These are the instructions for your educational material:
     - Do it in English (ALWAYS, REGARDLESS OF THE LANGUAGE OF THE PROVIDED CONTENT)
@@ -22,7 +21,5 @@ export const materialTemplate = ChatPromptTemplate.fromTemplate(
     Send me the html as a string, not as html code.
     If you think CSS is necessary, you can send me the CSS as well, but remember that the CSS should be inline.
 
-    `
-)
-
-export const materialTemplateString = materialTemplate.toString()
+`
+export const materialTemplate = ChatPromptTemplate.fromTemplate(materialTemplateString)

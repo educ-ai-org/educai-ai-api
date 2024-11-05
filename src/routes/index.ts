@@ -4,7 +4,6 @@ import pdfParse from 'pdf-parse'
 import mammoth from 'mammoth'
 import getTextFromYoutube from '../services/getTextFromYoutube/youtubeTranscript'
 import scrapeUrl from '../services/scrapeUrl/scrapeUrl'
-import generateQuestions from '../services/generateQuestions/generate-questions'
 import getTranscription from '../services/getTranscription/getTranscription'
 import uploadBuffer from '../services/getTranscription/uploadBuffer'
 import getEduResonse from '../services/getEduResponse/getEduResponse'
@@ -12,6 +11,7 @@ import generatePDF from '../services/convertTextToPdf/generatePdf'
 import { getEducationalResource } from '../services/getEducationalResource/getEducationalResource'
 import { ResourcesUploaded } from '../models/ResourcesUploaded'
 import getFeedbackFromChat from '../services/getFeedback/getFeedbackFromChat'
+import { generateQuestions } from '../services/generateQuestions/generateQuestions'
 
 const router = express.Router()
 const upload = multer({ storage: multer.memoryStorage() })
@@ -126,7 +126,8 @@ router.post('/convert-text-to-pdf', async (req, res) => {
 })
 
 router.post('/generate-educational-resource', upload.fields([{name: 'audio'}, { name: 'document' }]) , async (req, res) => {
-    const { youtubeLink, instructions, model } = req.body as ResourcesUploaded
+    const { youtubeLink, instructions } = req.body as ResourcesUploaded
+    const { model } = req.query as { model: string }
     const { audio, document } = req.files as { audio: Express.Multer.File[], document: Express.Multer.File[] }
 
     if(!youtubeLink && !audio && !document && !instructions) {
@@ -173,7 +174,7 @@ router.post('/generate-questions', upload.fields([{name: 'audio'}, { name: 'docu
             content: await getEducationalResource({ youtubeLink, document: documentFile, audio: audioFile, instructions }),
             model: model ?? 'gemini'
         }
-        const questions = await generateQuestions(data.content, numberOfQuestions, level, theme, relatedTheme)
+        const questions = await generateQuestions(data.content, numberOfQuestions, level, theme, relatedTheme, model)
         const question = await JSON.parse(questions).slice(0, numberOfQuestions)
 
         res.send(question)

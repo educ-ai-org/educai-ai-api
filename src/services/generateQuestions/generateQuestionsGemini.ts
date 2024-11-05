@@ -3,7 +3,7 @@ import { questionTemplate } from './prompts/question'
 import { JsonOutputFunctionsParser } from 'langchain/output_parsers'
 
 
-async function generateQuestions(text: string, questionsNumber: number, level: string, theme: string, relatedTheme: string) {
+export async function generateQuestionsGemini(text: string, questionsNumber: number, level: string, theme: string, relatedTheme: string) {
 
     const parser = new JsonOutputFunctionsParser()
     questionTemplate.outputParser = parser
@@ -23,5 +23,3 @@ async function generateQuestions(text: string, questionsNumber: number, level: s
         throw new Error('Error trying to generate questions')
     }
 }
-
-export default generateQuestions
