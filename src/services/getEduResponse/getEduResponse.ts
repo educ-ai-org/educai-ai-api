@@ -1,6 +1,6 @@
 import { JsonOutputFunctionsParser } from 'langchain/output_parsers'
 import gemini from '../../clients/google-client'
-import { eduTemplateResponse } from './eduTemplateResponse'
+import { eduTemplateResponse } from './prompts/eduTemplateResponse'
 
 export default async function getEduResonse(question: string): Promise<string> {
   const parser = new JsonOutputFunctionsParser()
