@@ -1,5 +1,5 @@
 import openai from '../../clients/openai-client'
-import { questionTemplateString } from './prompts/question'
+import { questionSystemPrompt } from './prompts/questionSystemPrompt'
 
 export async function generateQuestionsOpenAI(
   text: string,
@@ -27,7 +27,7 @@ export async function generateQuestionsOpenAI(
   const openaiModel = model.split(':')[1]
   const result = await openai.chat.completions.create({
     messages: [
-      { role: 'assistant', content: questionTemplateString },
+      { role: 'assistant', content: questionSystemPrompt },
       { role: 'user', content: prompt }
     ],
     model: openaiModel

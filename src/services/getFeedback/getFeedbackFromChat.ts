@@ -1,6 +1,6 @@
 import { JsonOutputFunctionsParser } from 'langchain/output_parsers'
 import gemini from '../../clients/google-client'
-import { getFeedbackFromChatTemplate } from '../getFeedback/getFeedbackFromChatTemplate'
+import { getFeedbackFromChatTemplate } from './prompts/getFeedbackFromChatTemplate'
 import generatePDF from '../convertTextToPdf/generatePdf'
 
 export type Messages = {

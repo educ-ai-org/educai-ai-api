@@ -1,5 +1,5 @@
 import openai from '../../clients/openai-client'
-import { materialTemplateString } from './prompts/materialTemplate'
+import { materialSystemPrompt } from './prompts/materialSystemPrompt'
 
 export default async function generateMaterialOpenAI(
   data: { content: string, model: string }
@@ -9,7 +9,7 @@ export default async function generateMaterialOpenAI(
 
   const result = await openai.chat.completions.create({
     messages: [
-      { role: 'assistant', content: materialTemplateString },
+      { role: 'assistant', content: materialSystemPrompt },
       { role: 'user', content: data.content },
     ],
     model: openaiModel
