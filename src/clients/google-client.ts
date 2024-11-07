@@ -3,9 +3,9 @@ import { config } from 'dotenv';
 
 config();
 
-const model = new ChatGoogleGenerativeAI({
+const gemini = new ChatGoogleGenerativeAI({
     apiKey: process.env.GOOGLE_API_KEY,
     modelName: 'gemini-pro'
 })
 
-export default model
+export default gemini

@@ -1,6 +1,6 @@
 import { JsonOutputFunctionsParser } from 'langchain/output_parsers'
-import model from '../../clients/google-client'
-import { getFeedbackFromChatTemplate } from '../getFeedback/getFeedbackFromChatTemplate'
+import gemini from '../../clients/google-client'
+import { getFeedbackFromChatTemplate } from './prompts/getFeedbackFromChatTemplate'
 import generatePDF from '../convertTextToPdf/generatePdf'
 
 export type Messages = {
@@ -8,11 +8,15 @@ export type Messages = {
   isUser: boolean
 }
 
-export default async function getFeedbackFromChat(messages: Messages[], studentName: string): Promise<Buffer> {
+export default async function getFeedbackFromChat(
+  messages: Messages[],
+  studentName: string,
+  model: string
+): Promise<Buffer> {
   const parser = new JsonOutputFunctionsParser()
   getFeedbackFromChatTemplate.outputParser = parser
 
-  const chain = getFeedbackFromChatTemplate.pipe(model)
+  const chain = getFeedbackFromChatTemplate.pipe(gemini)
 
   const messagesString = JSON.stringify(messages)
 
@@ -22,7 +26,7 @@ export default async function getFeedbackFromChat(messages: Messages[], studentN
 
   let cleanText: string = result.replace(/^```json\s*|\s*```$/gmi, '')
 
-  const pdf = await generatePDF({ content: cleanText})
+  const pdf = await generatePDF({ content: cleanText, model })
 
   return pdf
 }
