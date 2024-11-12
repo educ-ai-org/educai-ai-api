@@ -12,6 +12,7 @@ import { getEducationalResource } from '../services/getEducationalResource/getEd
 import { ResourcesUploaded } from '../models/ResourcesUploaded'
 import getFeedbackFromChat from '../services/getFeedback/getFeedbackFromChat'
 import { generateQuestions } from '../services/generateQuestions/generateQuestions'
+import getEduResponse from '../services/getEduResponse/getEduResponseOpenai'
 
 const router = express.Router()
 const upload = multer({ storage: multer.memoryStorage() })
@@ -93,12 +94,13 @@ router.post('/transcription', upload.single('file'), async (req, res) => {
 })
 
 router.post('/edu-response', async (req, res) => {
-    console.log('bateu no edu')
-    const { question } = req.body
-    if (!question) {
-        return res.status(400).send('Question is required.')
+    const { messages } = req.body
+    const openai = req.query.openai as string
+    if (openai === 'true') {
+        const response = await getEduResponse(messages)
+        return res.status(200).send({ response })
     }
-    const response = await getEduResonse(question)
+    const response = await getEduResonse('question')
     res.status(200).send({ response })
 })
 
