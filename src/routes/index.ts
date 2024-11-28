@@ -95,8 +95,8 @@ router.post('/transcription', upload.single('file'), async (req, res) => {
 
 router.post('/edu-response', async (req, res) => {
     const { messages } = req.body
-    const openai = req.query.openai as string
-    if (openai === 'true') {
+    const openai = req.query.openai === 'true'
+    if (openai) {
         const response = await getEduResponse(messages)
         return res.status(200).send({ response })
     }
