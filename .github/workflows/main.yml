@@ -42,42 +42,8 @@ jobs:
           .env
           package.json
           key.json
-        
-  Deploy-Azure:
-    needs: [CI]
-    permissions:
-      contents: write
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Download Artifacts
-      uses: actions/download-artifact@v4
-      with:
-          name: ia-api
-          path: ia-api/
           
-    - name: Deploy to Azure VM
-      uses: appleboy/scp-action@v0.1.7
-      with:
-          host: ${{ secrets.AZURE_VM_HOST }}
-          username: ${{ secrets.AZURE_VM_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.AZURE_VM_PORT }}
-          source: "ia-api/"
-          target: "/home/educai"
-
-    - name: Run IA-API in Docker Container
-      uses: appleboy/ssh-action@v1.0.3
-      with:
-        host: ${{ secrets.AZURE_VM_HOST }}
-        username: ${{ secrets.AZURE_VM_USERNAME }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        port: ${{ secrets.AZURE_VM_PORT }}
-        script: |
-          chmod +x /home/educai/script-ia-api.sh
-          sh /home/educai/script-ia-api.sh
-          
-  Deploy-AWS:
+  CD:
     needs: [CI]
     permissions:
       contents: write
