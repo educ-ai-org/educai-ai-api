@@ -91,7 +91,7 @@ jobs:
           path: ia-api/
 
     - name: Create .env file from secret
-      run: echo "${{ secrets.ENV_FILE }}" > ia-api/.env
+      echo "${{ secrets.ENV_FILE }}" | tr ';' '\n' > ia-api/.env
           
     - name: Deploy to AWS VM
       uses: appleboy/scp-action@v0.1.7
