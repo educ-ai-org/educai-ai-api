@@ -16,7 +16,7 @@ export default async function getEduResponse(messages: ChatMessages[]) {
         ...messages
       ]
     })
-    return response
+    return response.choices[0].message.content
   } catch (error) {
     console.error('Error fetching response:', error)
     throw error

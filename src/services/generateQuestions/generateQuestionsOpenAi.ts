@@ -6,8 +6,7 @@ export async function generateQuestionsOpenAI(
   questionsNumber: number,
   level: string,
   theme: string,
-  relatedTheme: string,
-  model: string
+  relatedTheme: string
 ): Promise<string> {
 
   const prompt = `
@@ -24,13 +23,12 @@ export async function generateQuestionsOpenAI(
 
   `
 
-  const openaiModel = model.split(':')[1]
   const result = await openai.chat.completions.create({
     messages: [
       { role: 'assistant', content: questionSystemPrompt },
       { role: 'user', content: prompt }
     ],
-    model: openaiModel
+    model: 'gpt-4o'
   })
 
   return result.choices[0].message.content ?? ''

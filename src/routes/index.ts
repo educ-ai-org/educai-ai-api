@@ -94,9 +94,10 @@ router.post('/transcription', upload.single('file'), async (req, res) => {
 })
 
 router.post('/edu-response', async (req, res) => {
-    const { messages } = req.body
-    const openai = req.query.openai === 'true'
+    const { messages, openai } = req.body
+    console.log(openai)
     if (openai) {
+        console.log('openai')
         const response = await getEduResponse(messages)
         return res.status(200).send({ response })
     }
@@ -161,7 +162,7 @@ router.post('/generate-educational-resource', upload.fields([{name: 'audio'}, { 
 })
 
 router.post('/generate-questions', upload.fields([{name: 'audio'}, { name: 'document' }]), async (req, res) => {
-    const { youtubeLink, instructions, level, theme, relatedTheme, numberOfQuestions, model } = req.body
+    const { youtubeLink, instructions, level, theme, relatedTheme, numberOfQuestions } = req.body
     const { audio, document } = req.files as { audio: Express.Multer.File[], document: Express.Multer.File[] }
 
     if(!youtubeLink && !audio && !document && !instructions) {
@@ -174,9 +175,8 @@ router.post('/generate-questions', upload.fields([{name: 'audio'}, { name: 'docu
     try {
         const data = {
             content: await getEducationalResource({ youtubeLink, document: documentFile, audio: audioFile, instructions }),
-            model: model ?? 'gemini'
         }
-        const questions = await generateQuestions(data.content, numberOfQuestions, level, theme, relatedTheme, model)
+        const questions = await generateQuestions(data.content, numberOfQuestions, level, theme, relatedTheme)
         const question = await JSON.parse(questions).slice(0, numberOfQuestions)
 
         res.send(question)
