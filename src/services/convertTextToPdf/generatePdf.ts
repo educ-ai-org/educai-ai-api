@@ -15,7 +15,7 @@ export default async function generatePDF(data: { content: string, model: string
 	}
 
 	const environment = process.env.ENVIROMENT
-	if (environment !== 'development') browserOptions.executablePath = '/usr/bin/chromium-browser'
+	if (environment !== 'development') browserOptions.executablePath = '/usr/bin/chromium'
 
 	const browser = await puppeteer.launch(browserOptions)
 	const page = await browser.newPage()
