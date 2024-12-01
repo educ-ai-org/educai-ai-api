@@ -142,7 +142,7 @@ router.post('/generate-educational-resource', upload.fields([{name: 'audio'}, { 
 
     let data = {
         content: await getEducationalResource({ youtubeLink, document: documentFile, audio: audioFile, instructions }),
-        model: model ?? 'gemini'
+        model: model ?? 'gpt-4o'
     }
 
     try {
