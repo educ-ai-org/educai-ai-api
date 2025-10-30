@@ -256,7 +256,7 @@ npm run build
 |----------|-------------|----------|---------|
 | `GOOGLE_API_KEY` | Google Gemini API key | Yes | - |
 | `GITHUB_TOKEN` | GitHub token for Azure OpenAI access | Yes | - |
-| `ENVIROMENT` | Environment (development/production) | No | development |
+| `ENVIROMENT` | Environment (development/production) - *Note: typo in variable name is intentional to match codebase* | No | development |
 
 ### Google Cloud Storage
 
